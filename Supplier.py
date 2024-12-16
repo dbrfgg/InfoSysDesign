@@ -24,7 +24,6 @@ class Supplier:
         except (KeyError, json.JSONDecodeError) as e:
             raise ValueError(f"Ошибка при разборе JSON: {e}")
 
-
     # Getters
     def get_supplier_id(self):
         return self.__supplier_id
@@ -85,4 +84,25 @@ class Supplier:
         pattern = r'^\+?\d{7,15}$'  # Номер телефона: от 7 до 15 цифр с возможным "+" в начале
         return isinstance(phone, str) and re.fullmatch(pattern, phone)
 
-   
+    # Полная версия объекта
+    @property
+    def full_version(self):
+        return (f"Supplier(supplier_id={self.__supplier_id}, first_name={self.__first_name}, "
+                f"last_name={self.__last_name}, address={self.__address}, phone={self.__phone})")
+
+    # Краткая версия объекта
+    @property
+    def short_version(self):
+        return f"Supplier({self.__first_name} {self.__last_name})"
+
+    # Сравнение объектов на равенство
+    def __eq__(self, other):
+        if isinstance(other, Supplier):
+            return (self.__supplier_id == other.__supplier_id and
+                    self.__first_name == other.__first_name and
+                    self.__last_name == other.__last_name and
+                    self.__address == other.__address and
+                    self.__phone == other.__phone)
+        return False
+
+    
