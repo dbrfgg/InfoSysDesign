@@ -1,4 +1,5 @@
 import re
+import json
 
 class Supplier:
     def __init__(self, supplier_id, first_name, last_name, address, phone):
@@ -7,7 +8,23 @@ class Supplier:
         self.set_last_name(last_name)
         self.set_address(address)
         self.set_phone(phone)
-    
+
+    # Классовый метод для создания объекта из JSON
+    @classmethod
+    def from_json(cls, data_json):
+        try:
+            data = json.loads(data_json)
+            return cls(
+                supplier_id=data["supplier_id"],
+                first_name=data["first_name"],
+                last_name=data["last_name"],
+                address=data["address"],
+                phone=data["phone"]
+            )
+        except (KeyError, json.JSONDecodeError) as e:
+            raise ValueError(f"Ошибка при разборе JSON: {e}")
+
+
     # Getters
     def get_supplier_id(self):
         return self.__supplier_id
@@ -23,8 +40,8 @@ class Supplier:
 
     def get_phone(self):
         return self.__phone
-    
-    # Setters с вызовом методов валидации
+
+    # Setters с валидацией
     def set_supplier_id(self, supplier_id):
         if not self.validate_id(supplier_id):
             raise ValueError("Supplier ID должен быть положительным целым числом.")
@@ -50,7 +67,7 @@ class Supplier:
             raise ValueError("Неверный формат телефона.")
         self.__phone = phone
 
-    # Статические методы для валидации полей
+    # Статические методы для валидации
     @staticmethod
     def validate_id(supplier_id):
         return isinstance(supplier_id, int) and supplier_id > 0
@@ -68,4 +85,4 @@ class Supplier:
         pattern = r'^\+?\d{7,15}$'  # Номер телефона: от 7 до 15 цифр с возможным "+" в начале
         return isinstance(phone, str) and re.fullmatch(pattern, phone)
 
-    
+   
